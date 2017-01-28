@@ -1,7 +1,7 @@
 /* 
  * CS:APP Data Lab 
  * 
- * <Please put your name and userid here>
+ * <Name: Vincent Rodriguez UserID: vincezr7>
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -171,7 +171,17 @@ NOTES:
  *   Rating: 1
  */
 int bitAnd(int x, int y) {
-  return 2;
+
+  // p^q is a logical equivalence to ~(~p | ~q)
+  // proof begins with p->q = ~p | q
+
+  int nx = ~x;
+  int ny = ~y;
+  int nxORny = (nx | ny);
+  int xAndy = ~nxORny;
+
+  return xAndy;
+
 }
 /* 
  * getByte - Extract byte n from word x
@@ -182,6 +192,15 @@ int bitAnd(int x, int y) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
+
+  // with bit-& I can make an int i such that the result of x&i will 
+  // produce an int whose bits are zeroes except the bits of i that 
+  // contain 1s
+
+  int mask = 0x0F;  // 1111 beginning at byte n=0
+  int shift = 4 * n;
+
+
   return 2;
 }
 /* 
@@ -192,7 +211,18 @@ int getByte(int x, int n) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+
+  //need to swap first bit in integer
+  //create int with first bit == 1
+  //then xOR x with that "mask" 
+  //this swaps just the first int
+
+  int mask = 1;
+  int negated = x ^ (mask << 31);
+
+  return negated;
+
+
 }
 /* 
  * bang - Compute !x without using !
