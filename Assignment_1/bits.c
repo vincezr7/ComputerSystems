@@ -197,11 +197,20 @@ int getByte(int x, int n) {
   // produce an int whose bits are zeroes except the bits of i that 
   // contain 1s
 
-  int mask = 0x0F;  // 1111 beginning at byte n=0
-  int shift = 4 * n;
+  int mask = 0xFF; //have mask
+  
+  //need to shift the number note the mask by 0, 8, 16, 24; figured this out after 4 hours
+
+  // to do this left shift int n by 3 to form the equation f(x) = 8n
+
+  int numBits = (n << 3);
+
+  //shift the number by the number of bits needed to get the desired byte in the LSB position and use mask to get LSB
+
+  int LSB = (x >> numBits) & mask;
 
 
-  return 2;
+  return LSB;
 }
 /* 
  * negate - return -x 
@@ -212,16 +221,13 @@ int getByte(int x, int n) {
  */
 int negate(int x) {
 
-  //need to swap first bit in integer
-  //create int with first bit == 1
-  //then xOR x with that "mask" 
-  //this swaps just the first int
+  //just doing pronlems on whiteboard to mimic the behavior of twos complement 
+  //i did an XOR operator with x and -1 then added one
+  // this was trial and error
 
-  int mask = 1;
-  int negated = x ^ (mask << 31);
-
-  return negated;
-
+	//to create all ones
+	//declare one push left 31 times then push right by 31. let algorithmic shift do the work
+	return ( ( x ^ -1 ) + 1 );
 
 }
 /* 
@@ -232,7 +238,28 @@ int negate(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+  
+	//all the money is in using twos complement to create a situation in which the MSB can only be one if x is 0
+
+	// ~x + 1 == 0 only if x is equal to zero because when represented in bits the inverse of 0 is -1
+
+	// because of this property ~(~x+1) == -1 only if x=0  //the +1 keeps it in the same "place" for x=0
+
+	// basically I want to abuse this wrap around of signed ints to ensure the leading bit is the same for x=0
+	// and only becuase of 0s negation being -1
+	// so, since ~x + 1 == x then ~(~x +1) == ~x; only for x=0; this guarantees a shift in the msb to 0 unless it is 0 because
+	// if the msb of ~x is 1 then then the negation of its compliment will never have a 1 as its msb.
+	// this means that I must do a bit and between x's negation and the equation above. 
+
+	//after this its just getting the MSB and performing bit & with 0x1  // Book, pg.95 for piecewise function
+
+	int 2Comp = ~x + 1;
+
+	int algorithm = ~( 2Comp ) & ~x;
+
+	return (algorthm >> 31) & 0x1;
+
+
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -241,7 +268,8 @@ int bang(int x) {
  *   Rating: 1
  */
 int tmin(void) {
-  return 2;
+  // book page 62; (in hexidecimal this is 0x80000000)
+	return (0x1 << 31);
 }
 /* 
  * logicalShift - shift x to the right by n, using a logical shift
