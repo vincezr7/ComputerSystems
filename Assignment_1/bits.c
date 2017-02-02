@@ -280,7 +280,23 @@ int tmin(void) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-  return 2;
+
+  //need a mask of one but only if the number is not 0 so it is 0x80000000 if n!=0
+  int mask = ( (!!n) << 31);
+
+  // arithmetic right shift will make everything be ones until the bit before the point desired
+  int shiftedMask = (mask >> n-1);
+
+  // negate mask to abide by bit & operator (I want 1's to signify what I want to keep)
+
+  int maskReady = ~shiftedMask;
+
+  //perform arithmetic shift then & with maskReady to get desired output
+
+  return ( (x >> n) & maskReady);
+
+
+
 }
 /* 
  * isPositive - return 1 if x > 0, return 0 otherwise 
@@ -290,7 +306,11 @@ int logicalShift(int x, int n) {
  *   Rating: 3
  */
 int isPositive(int x) {
-  return 2;
+	
+	//shift over size w, in this case w=31
+	//if most significant bit was 1 then it must be negative so use ! operator to return desired value
+    
+    return !(x>>31);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -300,6 +320,13 @@ int isPositive(int x) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
+
+
+
+
+
+
+
   return 2;
 }
 /*
@@ -314,7 +341,26 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 3
  */
 int multFiveEighths(int x) {
-  return 2;
+ 
+
+
+  //  x*5 == x*4 + x*1
+  //  x*4 == (x<<2) 
+  //  x*1 == x
+
+  //then x diveded by 8 is a RIGHT shift 3 spaces
+
+  //multiply by 5
+  int xmult5 = (x<<2) + x;
+
+  //should be logical right shift in case of negative numbers
+  //divide by 8
+
+  int result = xmult5 >> 3;
+
+  return result;
+
+
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -325,7 +371,7 @@ int multFiveEighths(int x) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    return 2;
+    return (x >> n);
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
